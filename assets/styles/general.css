@@ -1,0 +1,27 @@
+body {
+    background: #f0f0f0;
+}
+
+.navbar {
+    box-shadow: 0 0 40px rgb(34 37 59 / 10%);
+}
+.page-content.container {
+    padding-top: 30px;
+}
+
+.mainTitle {
+    text-align: center;
+    margin: 60px 20px;
+}
+
+.validator {
+    /*background: white;*/
+    /*box-shadow: 0 0 40px rgb(34 37 59 / 10%);*/
+    /*border-radius: 24px;*/
+    /*padding: 30px;*/
+}
+
+.validator .form-check {
+    margin-left: 30px;
+    margin-right: 30px;
+}

@@ -3,7 +3,7 @@ import dash_bootstrap_components as dbc
 from layouts import validator, statistics, predicitons, user_guide, not_found
 
 app = Dash(
-    external_stylesheets=[dbc.themes.BOOTSTRAP]
+    external_stylesheets=[dbc.themes.LITERA]
 )
 app.title = 'Celsia Data Validator'
 navbar = dbc.NavbarSimple(
@@ -21,8 +21,7 @@ navbar = dbc.NavbarSimple(
 app.layout = html.Div([
     dcc.Location(id='url', refresh=False),
     navbar,
-    html.Div(id='page-content')
-
+    html.Div(id='page-content', className='page-content container')
 ])
 
 routes = {
