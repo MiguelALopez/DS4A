@@ -22,7 +22,8 @@ def validator_page():
             ),
         ], className='d-flex justify-content-center p-4'),
         html.Div([
-            dbc.Button("Primary", color="primary", className="me-1"),
+            dcc.Upload(dbc.Button("Primary", color="primary", className="me-1"))
+
         ], className='d-flex justify-content-center m-4')
 
     ], className='validator')

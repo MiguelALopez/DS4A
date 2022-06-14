@@ -5,6 +5,11 @@ body {
 .navbar {
     box-shadow: 0 0 40px rgb(34 37 59 / 10%);
 }
+
+.navbar .active {
+    font-weight: 600
+}
+
 .page-content.container {
     padding-top: 30px;
 }

@@ -8,10 +8,10 @@ app = Dash(
 app.title = 'Celsia Data Validator'
 navbar = dbc.NavbarSimple(
     children=[
-        dbc.NavItem(dbc.NavLink("Validator", href="/validator")),
-        dbc.NavItem(dbc.NavLink("Prediction", href="/prediction")),
-        dbc.NavItem(dbc.NavLink("Statistics", href="/statistics")),
-        dbc.NavItem(dbc.NavLink("User guide", href="/user-guide")),
+        dbc.NavItem(dbc.NavLink("Validator", href="/validator", active='exact')),
+        dbc.NavItem(dbc.NavLink("Prediction", href="/prediction", active='exact')),
+        dbc.NavItem(dbc.NavLink("Statistics", href="/statistics", active='exact')),
+        dbc.NavItem(dbc.NavLink("User guide", href="/user-guide", active='exact')),
     ],
     brand="Celsia",
     brand_href="#",
