@@ -19,6 +19,12 @@ body {
     margin: 60px 20px;
 }
 
+.input-label {
+    color: #666666;
+    font-size: 14px;
+    margin: 0;
+}
+
 .validator {
     /*background: white;*/
     /*box-shadow: 0 0 40px rgb(34 37 59 / 10%);*/

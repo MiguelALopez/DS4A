@@ -25,6 +25,7 @@ app.layout = html.Div([
 ])
 
 routes = {
+    '/': validator.validator_page(),
     '/validator': validator.validator_page(),
     '/prediction': predicitons.predictions_page(),
     '/statistics': statistics.statistics_page(),

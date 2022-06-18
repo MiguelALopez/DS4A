@@ -4,7 +4,7 @@ import dash_bootstrap_components as dbc
 
 def validator_page():
     return html.Div([
-        html.H1('Voltage Failure checker', className='mainTitle'),
+        html.H1('Meter data failure checker', className='mainTitle'),
         html.Div([
             html.Span('Upload csv files with the consumption information to validate if the is an anomaly on the '
                       'measurement'),
@@ -12,8 +12,8 @@ def validator_page():
         html.Div([
             dbc.RadioItems(
                 id="radios",
-                className="btn-group",
                 labelCheckedClassName="active",
+                inline=True,
                 options=[
                     {"label": "Consumption", "value": 'consumption'},
                     {"label": "Clients", "value": 'clients'}
