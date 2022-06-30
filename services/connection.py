@@ -1,10 +1,11 @@
 import psycopg2
+import pandas as pd
 
-global cursor
+global connect
 
 
 def start():
-    global cursor
+    global connect
     name = "celsia"
     user = "team173"
     password = "4W5DBF0rT34m"
@@ -12,12 +13,11 @@ def start():
     host = "validated-data.c0qqjwg62lhy.us-east-1.rds.amazonaws.com"
 
     connect = psycopg2.connect(dbname=name, user=user, password=password, host=host)
-    cursor = connect.cursor()
 
 
-def count_users():
-    global cursor
+def get_clients():
+    global connect
 
-    cursor.execute("SELECT COUNT(*) FROM clients;")
-    return cursor.fetchone()
+    return pd.read_sql_query("SELECT * FROM clients;", connect)
+
 
