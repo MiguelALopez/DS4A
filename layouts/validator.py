@@ -1,10 +1,14 @@
 from dash import html, dcc
 import dash_bootstrap_components as dbc
+from services import connection
 
 
 def validator_page():
+    users = connection.count_users()
+    print(users)
     return html.Div([
         html.H1('Meter data failure checker', className='mainTitle'),
+        html.H1(users),
         html.Div([
             html.Span('Upload csv files with the consumption information to validate if the is an anomaly on the '
                       'measurement'),

@@ -1,10 +1,13 @@
 from dash import Dash, html, callback, Output, Input, dcc
 import dash_bootstrap_components as dbc
 from layouts import validator, statistics, predicitons, user_guide, not_found
+from services import connection
 
 app = Dash(
     external_stylesheets=[dbc.themes.LITERA]
 )
+connection.start()
+
 app.title = 'Celsia Data Validator'
 navbar = dbc.NavbarSimple(
     children=[
@@ -32,6 +35,8 @@ routes = {
     '/user-guide': user_guide.user_guide_page(),
     '/404': not_found.not_found_page()
 }
+
+
 
 
 @callback(Output('page-content', 'children'),
