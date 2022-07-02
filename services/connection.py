@@ -30,3 +30,9 @@ def upload_clients(client):
     client.to_sql(name='clients', schema='public', con=engine, if_exists='append', index=False)
 
 
+def feed_usage(usage):
+    global engine
+
+    usage.to_sql(name='usage', schema='public', con=engine, if_exists='append', index=False)
+
+
