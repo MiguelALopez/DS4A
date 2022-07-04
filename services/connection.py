@@ -21,7 +21,13 @@ def start():
 def get_clients():
     global engine
 
-    return pd.read_sql_query("SELECT * FROM clients;", engine)
+    return pd.read_sql_query('SELECT * FROM clients;', engine)
+
+
+def get_technical():
+    global engine
+
+    return pd.read_sql_query('SELECT * FROM technical;', engine)
 
 
 def upload_clients(client):

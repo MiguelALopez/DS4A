@@ -1,5 +1,6 @@
 body {
     background: #f0f0f0;
+    font-family: "Assistant Arial", sans-serif;
 }
 
 .navbar {
@@ -25,14 +26,29 @@ body {
     margin: 0;
 }
 
-.validator {
-    /*background: white;*/
-    /*box-shadow: 0 0 40px rgb(34 37 59 / 10%);*/
-    /*border-radius: 24px;*/
-    /*padding: 30px;*/
-}
-
 .validator .form-check {
     margin-left: 30px;
     margin-right: 30px;
+}
+
+.table-container {
+    padding: 24px;
+    background: white;
+    border-radius: 24px;
+}
+
+.dash-spreadsheet-container::-webkit-scrollbar {
+    -webkit-appearance: none;
+}
+
+.dash-spreadsheet-container::-webkit-scrollbar {
+    border-radius: 4px;
+    border: 1px solid #fff;
+    background-color: rgba(0,0,0,.3);
+    height: 10px;
+}
+
+.dash-spreadsheet-container::-webkit-scrollbar-track {
+    background-color: #fff;
+    border-radius: 8px;
 }

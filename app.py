@@ -11,7 +11,7 @@ connection.start()
 app.title = 'Celsia Data Validator'
 navbar = dbc.NavbarSimple(
     children=[
-        dbc.NavItem(dbc.NavLink("Validator", href="/validator", active='exact')),
+        dbc.NavItem(dbc.NavLink("Validator", href="/", active='exact')),
         dbc.NavItem(dbc.NavLink("Prediction", href="/prediction", active='exact')),
         dbc.NavItem(dbc.NavLink("Statistics", href="/statistics", active='exact')),
         dbc.NavItem(dbc.NavLink("User guide", href="/user-guide", active='exact')),
@@ -35,8 +35,6 @@ routes = {
     '/user-guide': user_guide.user_guide_page(),
     '/404': not_found.not_found_page()
 }
-
-
 
 
 @callback(Output('page-content', 'children'),
