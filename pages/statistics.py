@@ -1,7 +1,9 @@
 import dash
-from dash import html, dash_table, Output, Input, callback
+from dash import html, dash_table, Output, Input, callback, dcc
 import dash_bootstrap_components as dbc
 from services import connection
+import plotly.express as px
+import pandas as pd
 
 dash.register_page(__name__)
 
@@ -26,8 +28,63 @@ def statistics_page():
             ], align='center', className='mb-1'),
             html.Div(render_table(technical), id='technical-table')
         ], className='table-container mb-4'),
-        html.Div(id='result')
+        html.Div(id='result'),
+        dcc.Graph(
+            id='hist-client',
+            figure=render_client_histogram('tipo_cliente', 'Histograma de tipo de cliente'),
+            className='table-container mb-4'
+        ),
+        dcc.Graph(
+            id='hist-business',
+            figure=render_client_histogram('empresa', 'Histograma por empresa'),
+            className='table-container mb-4'
+        ),
+        dcc.Graph(
+            id='hist-start_date',
+            figure=render_client_histogram('fecha_inicio', 'Fecha de inicio del servicio a cada empresa'),
+            className='table-container mb-4'
+        ),
+        dcc.Graph(
+            id='hist-uen',
+            figure=render_client_histogram('uen', 'Histograma de UEN'),
+            className='table-container mb-4'
+        ),
+        dcc.Graph(
+            id='hist-sector',
+            figure=render_client_histogram('sector', 'Sector del cliente'),
+            className='table-container mb-4'
+        ),
+        dcc.Graph(
+            id='hist-depto',
+            figure=render_client_histogram('depto_pto_servicio', 'Histograma de departamento'),
+            className='table-container mb-4'
+        ),
+        dcc.Graph(
+            id='hist-stress',
+            figure=render_client_histogram('nivel_tension', 'Histograma nivel de tension'),
+            className='table-container mb-4'
+        ),
+        dcc.Graph(
+            id='hist-brand',
+            figure=render_client_histogram('marca', 'Histograma de marca'),
+            className='table-container mb-4'
+        ),
+        dcc.Graph(
+            id='hist-agreement',
+            figure=render_client_histogram('tipo_acuerdo', 'Histograma tipo de acuerdo'),
+            className='table-container mb-4'
+        ),
+        dcc.Graph(
+            id='hist-agreement',
+            figure=render_client_histogram('prop_trafo', 'Histograma de propiedad del transformador'),
+            className='table-container mb-4'
+        )
+
     ], id='statistics')
+
+
+def render_client_histogram(column, title):
+    return px.histogram(clients[column], title=title)
 
 
 def render_table(df, column_name='', query=''):
@@ -36,6 +93,7 @@ def render_table(df, column_name='', query=''):
     return dash_table.DataTable(
         df.to_dict('records'),
         [{'name': i, 'id': i, 'selectable': False} for i in df.columns],
+        sort_action='native',
         page_size=10,
         style_table={
             'overflowX': 'auto',
