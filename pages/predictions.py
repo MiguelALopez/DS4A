@@ -1,6 +1,10 @@
+import dash
 from datetime import date
 from dash import html, dcc
 import dash_bootstrap_components as dbc
+
+
+dash.register_page(__name__)
 
 
 def predictions_page():
@@ -42,3 +46,6 @@ def predictions_page():
             ])
         ], className='container')
     ])
+
+
+layout = predictions_page()

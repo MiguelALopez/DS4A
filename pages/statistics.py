@@ -1,22 +1,21 @@
-from dash import html, dash_table, Input, Output, dcc
+import dash
+from dash import html, dash_table, Output, Input
 import dash_bootstrap_components as dbc
 from services import connection
 
+dash.register_page(__name__)
 query = ''
 
 
 def statistics_page():
     clients = connection.get_clients()
     technical = connection.get_technical()
-    statistics = html.Div([
+    return html.Div([
         html.H1('Statistics', style={'textAlign': 'center'}, className='mb-4'),
         render_table(clients, 'Clients info', 'nombre'),
         render_table(technical, 'Technical info'),
+        html.Div(id='result')
     ], id='statistics')
-
-
-
-    return statistics
 
 
 def render_table(df, title, column_name=''):
@@ -66,3 +65,6 @@ def render_table(df, title, column_name=''):
             }
         )
     ], className='table-container mb-4')
+
+
+layout = statistics_page()
