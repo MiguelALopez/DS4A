@@ -1,70 +1,91 @@
 import dash
-from dash import html, dash_table, Output, Input
+from dash import html, dash_table, Output, Input, callback
 import dash_bootstrap_components as dbc
 from services import connection
 
 dash.register_page(__name__)
-query = ''
+
+clients = connection.get_clients()
+technical = connection.get_technical()
 
 
 def statistics_page():
-    clients = connection.get_clients()
-    technical = connection.get_technical()
     return html.Div([
         html.H1('Statistics', style={'textAlign': 'center'}, className='mb-4'),
-        render_table(clients, 'Clients info', 'nombre'),
-        render_table(technical, 'Technical info'),
+        html.Div([
+            dbc.Row([
+                dbc.Col(html.H3('Clients info', className='m-0'), width='auto'),
+                dbc.Col(dbc.Input(id='client-input', placeholder='Search by nombre...', type='text'))
+            ], align='center', className='mb-1'),
+            html.Div(render_table(clients, 'nombre'), id='clients-table')
+        ], className='table-container mb-4'),
+        html.Div([
+            dbc.Row([
+                dbc.Col(html.H3('Technical info', className='m-0'), width='auto'),
+                dbc.Col(dbc.Input(id='technical-input', placeholder='Search by nombre_frontera...', type='text'))
+            ], align='center', className='mb-1'),
+            html.Div(render_table(technical), id='technical-table')
+        ], className='table-container mb-4'),
         html.Div(id='result')
     ], id='statistics')
 
 
-def render_table(df, title, column_name=''):
-    global query
-    if column_name:
-        df = df[df[column_name].str.contains(query)]
-    return html.Div([
-        dbc.Row([
-            dbc.Col(html.H3(title, className='m-0'), width='auto'),
-            dbc.Col(dbc.Input(id='input', placeholder='Search...', type='text'))
-        ], align='center', className='mb-1'),
-        dash_table.DataTable(
-            df.to_dict('records'),
-            [{'name': i, 'id': i, 'selectable': False} for i in df.columns],
-            page_size=10,
-            style_table={
-                'overflowX': 'auto',
-                'fontFamily': '"Assistant Arial", sans-serif', 'fontStyle': 'normal',
-                'fontSize': '14px'
-            },
-            row_selectable=False,
-            cell_selectable=False,
-            style_cell={
-                'fontFamily': '"Assistant Arial", sans-serif', 'fontStyle': 'normal',
-                'fontSize': '14px',
-                'fontWeight': '400',
-                'lineHeight': '18px',
-                'color': '#394457',
-                'border': 'none',
-                'padding': '0 17px'
-            },
-            style_data_conditional=[
-                {
-                    'if': {'row_index': 'even'},
-                    'backgroundColor': '#F5F7FA',
-                    'borderRadius: ': '12px'
-                }
-            ],
-            style_header={
-                'backgroundColor': 'white',
-                'fontFamily': '"Assistant Arial", sans-serif', 'fontStyle': 'normal',
-                'fontWeight': '600',
-                'fontSize': '14px',
-                'color': '#8F9CB4',
-                'border': 'none',
-                'borderLeft': '1px'
+def render_table(df, column_name='', query=''):
+    if column_name and query:
+        df = df[df[column_name].str.contains('(?i)'+query)]
+    return dash_table.DataTable(
+        df.to_dict('records'),
+        [{'name': i, 'id': i, 'selectable': False} for i in df.columns],
+        page_size=10,
+        style_table={
+            'overflowX': 'auto',
+            'fontFamily': '"Assistant Arial", sans-serif', 'fontStyle': 'normal',
+            'fontSize': '14px'
+        },
+        row_selectable=False,
+        cell_selectable=False,
+        style_cell={
+            'fontFamily': '"Assistant Arial", sans-serif', 'fontStyle': 'normal',
+            'fontSize': '14px',
+            'fontWeight': '400',
+            'lineHeight': '18px',
+            'color': '#394457',
+            'border': 'none',
+            'padding': '0 17px'
+        },
+        style_data_conditional=[
+            {
+                'if': {'row_index': 'even'},
+                'backgroundColor': '#F5F7FA',
+                'borderRadius: ': '12px'
             }
-        )
-    ], className='table-container mb-4')
+        ],
+        style_header={
+            'backgroundColor': 'white',
+            'fontFamily': '"Assistant Arial", sans-serif', 'fontStyle': 'normal',
+            'fontWeight': '600',
+            'fontSize': '14px',
+            'color': '#8F9CB4',
+            'border': 'none',
+            'borderLeft': '1px'
+        }
+    )
 
 
 layout = statistics_page()
+
+
+@callback(
+    Output(component_id='clients-table', component_property='children'),
+    Input(component_id='client-input', component_property='value')
+)
+def update_client_table(value):
+    return render_table(clients, 'nombre', value)
+
+
+@callback(
+    Output(component_id='technical-table', component_property='children'),
+    Input(component_id='technical-input', component_property='value')
+)
+def update_technical_table(value):
+    return render_table(technical, 'nombre_frontera', value)
