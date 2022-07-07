@@ -7,7 +7,7 @@ from dash import Dash, html, callback, Output, Input, dcc
 
 app = Dash(
     external_stylesheets=[dbc.themes.LITERA],
-    use_pages=True
+    suppress_callback_exceptions=True
 )
 connection.start()
 
@@ -34,7 +34,7 @@ app.layout = html.Div([
 routes = {
     '/': validator.validator_page(),
     '/validator': validator.validator_page(),
-    '/prediction': predictions.predictions_page(),
+    '/predictions': predictions.predictions_page(),
     '/statistics': statistics.statistics_page(),
     '/user-guide': user_guide.user_guide_page(),
     '/404': not_found_404.not_found_page()

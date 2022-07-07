@@ -132,7 +132,7 @@ def render_table(df, column_name='', query=''):
 
 
 @callback(
-    Output(component_id='clients-table', component_property='children'),
+    Output(component_id='clients-table', component_property='children', ),
     Input(component_id='client-input', component_property='value')
 )
 def update_client_table(value):
