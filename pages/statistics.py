@@ -3,15 +3,16 @@ from dash import html, dash_table, Output, Input, callback, dcc
 import dash_bootstrap_components as dbc
 from services import connection
 import plotly.express as px
-import pandas as pd
 
-dash.register_page(__name__)
-
-clients = connection.get_clients()
-technical = connection.get_technical()
+global clients
+global technical
 
 
 def statistics_page():
+    global clients
+    global technical
+    clients = connection.get_clients()
+    technical = connection.get_technical()
     return html.Div([
         html.H1('Statistics', style={'textAlign': 'center'}, className='mb-4'),
         html.Div([
@@ -128,9 +129,6 @@ def render_table(df, column_name='', query=''):
             'borderLeft': '1px'
         }
     )
-
-
-layout = statistics_page()
 
 
 @callback(

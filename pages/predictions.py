@@ -4,9 +4,6 @@ from dash import html, dcc
 import dash_bootstrap_components as dbc
 
 
-dash.register_page(__name__)
-
-
 def predictions_page():
     return html.Div([
         html.H1('Predictions', className='mainTitle'),
@@ -46,6 +43,3 @@ def predictions_page():
             ])
         ], className='container')
     ])
-
-
-layout = predictions_page()

@@ -6,8 +6,6 @@ import io
 from dash import html, dcc, dash_table, callback,Output,Input,State
 import dash_bootstrap_components as dbc
 
-dash.register_page(__name__, path='/')
-
 
 def validator_page():
     return html.Div([
@@ -97,6 +95,7 @@ def parse_contents(contents, filename, date):
         })
     ])
 
+
 @callback(Output('output-data-upload', 'children'),
               Input('upload_button','n_clicks'),
               State('upload-data', 'contents'),
@@ -108,6 +107,3 @@ def update_output(nc,list_of_contents, list_of_names, list_of_dates):
             parse_contents(c, n, d) for c, n, d in
             zip(list_of_contents, list_of_names, list_of_dates)]
         return children
-
-
-layout = validator_page()
