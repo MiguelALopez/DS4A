@@ -1,13 +1,13 @@
 import dash
-import numpy as np
+#import numpy as np
 import pandas as pd
 from datetime import datetime
 import base64
 import io
 from dash import html, dcc, dash_table, callback,Output,Input,State
 import dash_bootstrap_components as dbc
-from sklearn.ensemble import RandomForestClassifier
-import joblib as joblib
+#from sklearn.ensemble import RandomForestClassifier
+#import joblib as joblib
 
 #dash.register_page(__name__, path='/')
 
@@ -126,7 +126,7 @@ def parse_contents(contents, filename, date):
     #data = cleaning_data(df)
     #predicted = cels_rf.predict(data)
 
-    df["Predicted Failure"] = df["falla"]
+    
 
     return html.Div([
         html.H5(filename),
