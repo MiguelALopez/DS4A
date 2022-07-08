@@ -1,11 +1,15 @@
 import dash
+import numpy as np
 import pandas as pd
 from datetime import datetime
 import base64
 import io
 from dash import html, dcc, dash_table, callback,Output,Input,State
 import dash_bootstrap_components as dbc
-from services import connection
+from sklearn.ensemble import RandomForestClassifier
+import joblib as joblib
+
+#dash.register_page(__name__, path='/')
 
 
 def validator_page():
@@ -55,92 +59,108 @@ def validator_page():
 
         ], className='validator')
 
+def cleaning_data(df):
+    """Cleans the entry data"""
+    
+    clean_df = df.drop(columns=['falla','codigo_sic','nivel_tension','fecha_original_de_registro']).copy()
+    clean_df = pd.concat([(clean_df["i_a_mean"] - clean_df["i_a_mean"].mean())/clean_df["i_a_mean"].std(),\
+                     (clean_df["i_b_mean"] - clean_df["i_b_mean"].mean())/clean_df["i_b_mean"].std(),\
+                    (clean_df.vla - clean_df.vla.mean())/clean_df.vla.std(),\
+                    (clean_df.vlb - clean_df.vlb.mean())/clean_df.vlb.std(),\
+                    (clean_df.vlc - clean_df.vlc.mean())/clean_df.vlc.std(),\
+                    (clean_df.kvarhd - clean_df.kvarhd.mean())/clean_df.kvarhd.std(),\
+                    (clean_df.kwhd - clean_df.kwhd.mean())/clean_df.kwhd.std(),\
+                     pd.get_dummies(clean_df["requiere_medidor_respaldo"], prefix='req_medidor', drop_first=False), \
+                    (clean_df["capacidad_kva"] - clean_df["capacidad_kva"].mean())/clean_df["capacidad_kva"].std(),\
+                     pd.get_dummies(clean_df["clase_de_precision_tc"], prefix='clasePrecisionTc', drop_first=False), \
+                    pd.get_dummies(clean_df["clase_de_precision_tp"], prefix='clasePrecisionTp', drop_first=False), \
+                    pd.get_dummies(clean_df["conexion"], prefix='conexion', drop_first=False), \
+                    pd.get_dummies(clean_df["departamento"], prefix='departamento', drop_first=False), \
+                    pd.get_dummies(clean_df["medio_modem_principal"], prefix='medioModemPpal', drop_first=False), \
+                    pd.get_dummies(clean_df["multiplo_prime_read"], prefix='multiploPrimeR', drop_first=False), \
+                    (clean_df["multiplo_tc"] - clean_df["multiplo_tc"].mean())/clean_df["multiplo_tc"].std(),\
+                    (clean_df["multiplo_tp"] - clean_df["multiplo_tp"].mean())/clean_df["multiplo_tp"].std(),\
+                    (clean_df["nivel_de_tension"] - clean_df["nivel_de_tension"].mean())/clean_df["nivel_de_tension"].std(),\
+                    (clean_df["punto_de_medicion"] - clean_df["punto_de_medicion"].mean())/clean_df["punto_de_medicion"].std(),\
+                    pd.get_dummies(clean_df["relacion_tc"], prefix='realacionTc', drop_first=False), \
+                    pd.get_dummies(clean_df["relacion_tp"], prefix='realacionTp', drop_first=False), \
+                    (clean_df["tension_kv"] - clean_df["tension_kv"].mean())/clean_df["tension_kv"].std(),\
+                    pd.get_dummies(clean_df["tipo_frontera_xm"], prefix='tipoFrontXm', drop_first=False), \
+                    pd.get_dummies(clean_df["zona"], prefix='zona', drop_first=False), \
+                    pd.get_dummies(clean_df["depto_pto_servicio"], prefix='deptPtoServ', drop_first=False), \
+                    pd.get_dummies(clean_df["desc_tipo_cliente"], prefix='descTipoCliente', drop_first=False), \
+                    pd.get_dummies(clean_df["marca_modelo"], prefix='marcaModelo', drop_first=False), \
+                    pd.get_dummies(clean_df["nivel_tension_2"], prefix='nivelTension', drop_first=False), \
+                    pd.get_dummies(clean_df["operador_red"], prefix='operadorRed', drop_first=False), \
+                    pd.get_dummies(clean_df["prop_activo"], prefix='propActivo', drop_first=False), \
+                    pd.get_dummies(clean_df["sector"], prefix='sector', drop_first=False), \
+                    pd.get_dummies(clean_df["tarifa"], prefix='tarifa', drop_first=False), \
+                    pd.get_dummies(clean_df["tipo_acuerdo"], prefix='tipoAcuerdo', drop_first=False), \
+                    pd.get_dummies(clean_df["zona_ingreso"], prefix='zonaIngreso', drop_first=False)
+                   ], axis=1)
+    clean_df['Intercept'] = 1
+    clean_df = clean_df.dropna()
+    return clean_df
 
-def read_contents(contents, filename, nrows) -> pd.DataFrame:
+
+def parse_contents(contents, filename, date):
     content_type, content_string = contents.split(',')
-    nrows = None if nrows == 0 else 1
+
     decoded = base64.b64decode(content_string)
     try:
         if 'csv' in filename:
             # Assume that the user uploaded a CSV file
             df = pd.read_csv(
-                io.StringIO(decoded.decode('utf-8')), nrows=nrows)
+                io.StringIO(decoded.decode('utf-8')))
         elif 'xls' in filename:
             # Assume that the user uploaded an excel file
-            df = pd.read_excel(io.BytesIO(decoded), nrows=nrows)
+            df = pd.read_excel(io.BytesIO(decoded))    
     except Exception as e:
         print(e)
+
         return html.Div([
             'There was an error processing this file.'
         ])
-    return df
+    #Loading the model
+    #cels_rf = joblib.load(r"C:\Users\rsjes\OneDrive\Documentos\GitHub\DS4A\pages\celsia_random_forest.joblib")
+    #data = cleaning_data(df)
+    #predicted = cels_rf.predict(data)
 
+    df["Predicted Failure"] = df["falla"]
 
-def parse_contents(value, contents, filename, date):
-    # validating info feeded
-    if value == 'consumption':
-        try:
-            assert 1 == 1  # assert list(read_contents(contents,filename,1).columns) == ['CODIGO_SIC','I_a_mean','I_b_mean','I_c_mean','VLA','VLB','VLC','kWhD','kWhR','kVarhD','kVarhR','FECHA','Capacidad','FALLA']
-        except Exception as e:
-            return html.Div(['File has not expected format. Please see user guide'])
-        else:
-            return read_contents(contents, filename, 0)
-    else:
-        try:
-            assert list(read_contents(contents, filename, 1).columns) == []  # Only columns in clients table in DB
-        except Exception as e:
-            return html.Div(['File has not expected format. Please see user guide'])
-        else:
-            connection.upload_clients(read_contents(contents, filename, 0))
-            return html.Div(["Client's info has been uploaded succesfully!"])
-
-
-def get_stats(df):
-    # function to predict failures from data feeded
-    #
     return html.Div([
+        html.H5(filename),
+        html.H6(datetime.fromtimestamp(date)),
+
+        dash_table.DataTable(
+            df.to_dict('records'),
+            [{'name': i, 'id': i} for i in df.columns],
+            page_size=10,
+            filter_action='native',
+            page_action='native'
+        ),
+
         html.Hr(),  # horizontal line
-        html.Div(children=[html.H1('Results of validation'),
 
-                           dcc.Graph(id='dashboard_validator', figure=go.Scatter(y=df['I_a_mean'], x=df['VLA'])),
-                           dash_table.DataTable(
-                               df.to_dict('records'),
-                               [{'name': i, 'id': i} for i in df.columns],
-                               page_size=10,
-                               filter_action='native',
-                               page_action='native'
-                           ),
-
-                           html.Hr(),  # horizontal line
-                           html.Div([dbc.Button(id='valid-results-save', children=['Save results']),
-                                     dbc.Button(id='valid-results-back', children=['Back to start'])
-                                     ])
-                           ])
-
+        # For debugging, display the raw contents provided by the web browser
+        html.Div('Raw Content'),
+        html.Pre(contents[0:200] + '...', style={
+            'whiteSpace': 'pre-wrap',
+            'wordBreak': 'break-all'
+        })
     ])
 
+@callback(Output('output-data-upload', 'children'),
+              Input('upload_button','n_clicks'),
+              State('upload-data', 'contents'),
+              State('upload-data', 'filename'),
+              State('upload-data', 'last_modified'))
 
-@callback([Output('results_validator', 'children'),
-           Output('output-data-upload', 'children')],
-          [Input('upload_button', 'n_clicks')],
-          State('radios', 'value'),
-          State('upload-data', 'contents'),
-          State('upload-data', 'filename'),
-          State('upload-data', 'last_modified'), prevent_initial_call=True)
-def update_output(nc, value, list_of_contents, list_of_names, list_of_dates):
+def update_output(nc,list_of_contents, list_of_names, list_of_dates):
     if list_of_contents is not None:
+        children = [
+            parse_contents(c, n, d) for c, n, d in
+            zip(list_of_contents, list_of_names, list_of_dates)]
+        return children
 
-        dfs = [parse_contents(value, c, n, d) for c, n, d in
-               zip(list_of_contents, list_of_names, list_of_dates)]
-        if any([True for x in dfs if type(x) == html.Div]):
-            i = 0
-            while type(dfs[i]) != html.Div:
-                i += 1
-            error_desc = dfs[i]
-            return None, error_desc
-        else:
-            df = dfs[0]
-            for x in dfs[1:]:
-                pd.concat(df, x, ignore_index=True)
-
-            return get_stats(df), html.Div('Results are ready! Please view them below')
+layout = validator_page()
