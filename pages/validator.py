@@ -132,7 +132,39 @@ def parse_contents(contents, filename, date):
             [{'name': i, 'id': i} for i in df.columns],
             page_size=10,
             filter_action='native',
-            page_action='native'
+            page_action='native',
+            style_table={
+                'overflowX': 'auto',
+                'fontFamily': '"Assistant Arial", sans-serif', 'fontStyle': 'normal',
+                'fontSize': '14px'
+            },
+            row_selectable=False,
+            cell_selectable=False,
+            style_cell={
+                'fontFamily': '"Assistant Arial", sans-serif', 'fontStyle': 'normal',
+                'fontSize': '14px',
+                'fontWeight': '400',
+                'lineHeight': '18px',
+                'color': '#394457',
+                'border': 'none',
+                'padding': '0 17px'
+            },
+            style_data_conditional=[
+                {
+                    'if': {'row_index': 'even'},
+                    'backgroundColor': '#F5F7FA',
+                    'borderRadius: ': '12px'
+                }
+            ],
+            style_header={
+                'backgroundColor': 'white',
+                'fontFamily': '"Assistant Arial", sans-serif', 'fontStyle': 'normal',
+                'fontWeight': '600',
+                'fontSize': '14px',
+                'color': '#8F9CB4',
+                'border': 'none',
+                'borderLeft': '1px'
+            }
         ),
 
         html.Hr(),  # horizontal line
